@@ -78,7 +78,7 @@ elif st.session_state.page == 'predict':
         input_df = input_df[expected_features]
 
         # Button to make predictions
-        if st.button('Predict ML'):
+        if st.button('Predict'):
             prediction = model.predict(input_df)
             inverse_prediction = np.expm1(prediction)
             st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
