@@ -24,9 +24,9 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
     optimal_lambdas = pickle.load(lambda_buffer)
     model = joblib.load(model_buffer)
 
-    # Debugging: Check the type and content of the loaded model
+    # Debugging: Check the type and a few key attributes of the loaded model
     st.write(f"Model type: {type(model)}")
-    st.write(f"Model content: {model}")
+    st.write(f"Model parameters: {model.get_params()}")
 
     # Define all expected features
     expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
