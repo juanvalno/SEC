@@ -7,64 +7,76 @@ import requests
 import io
 import pickle
 
-# Load pickle files from URLs
-url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl'
-url_model = 'https://raw.githubusercontent.com/juanvalno/SEC/22d581a130216da15bff6c439d5cd7819258332d/Model/model.json'
+# Function to load the model and transformation parameters
+def load_model_and_params(url_lambda, url_model):
+    response_lambda = requests.get(url_lambda)
+    response_model = requests.get(url_model)
 
-response_lambda = requests.get(url_lambda)
-response_model = requests.get(url_model)
+    if response_lambda.status_code == 200 and response_model.status_code == 200:
+        lambda_buffer = io.BytesIO(response_lambda.content)
+        model_buffer = io.BytesIO(response_model.content)
 
-# Check if the requests were successful
-if response_lambda.status_code == 200 and response_model.status_code == 200:
-    # Write the content to a buffer
-    lambda_buffer = io.BytesIO(response_lambda.content)
-    model_buffer = io.BytesIO(response_model.content)
+        optimal_lambdas = pickle.load(lambda_buffer)
 
-    # Load the transformation parameters
-    optimal_lambdas = pickle.load(lambda_buffer)
+        model_file_path = 'Model/model.json'
+        with open(model_file_path, 'wb') as file:
+            file.write(model_buffer.getvalue())
 
-    # Save the model buffer to a file
-    model_file_path = 'Model/model.json'
-    with open(model_file_path, 'wb') as file:
-        file.write(model_buffer.getvalue())
+        model = XGBRegressor()
+        model.load_model(model_file_path)
+        return model, optimal_lambdas
+    else:
+        st.error("Failed to load model or transformation parameters. Please check the URLs.")
+        return None, None
 
-    # Load the model from the saved file
-    model = XGBRegressor()
-    model.load_model(model_file_path)  # Load model from the saved file
+# Define all expected features
+expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
 
-    # Define all expected features
-    expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
+# Sidebar navigation
+st.sidebar.title('Navigation')
+page = st.sidebar.radio('Go to', ['Home', 'Predict'])
 
-    # Streamlit app
-    st.title('FARM: Food Availability and Security Monitor')
+# Page: Home
+if page == 'Home':
+    st.title('Welcome to FARM: Food Availability and Security Monitor')
+    st.write('Navigate to the Predict page to make predictions.')
 
-    # Input fields
-    input_data = {}
-    col1, col2 = st.columns(2)
-    for i, feature in enumerate(expected_features):
-        if i < 4:
-            input_data[feature] = col1.number_input(feature, value=0.0)
-        else:
-            input_data[feature] = col2.number_input(feature, value=0.0)
+# Page: Predict
+elif page == 'Predict':
+    st.title('Prediction Page')
 
-    # Create DataFrame with input data
-    input_df = pd.DataFrame([input_data])
+    # Load the model and parameters
+    model, optimal_lambdas = load_model_and_params(
+        'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl',
+        'https://raw.githubusercontent.com/juanvalno/SEC/22d581a130216da15bff6c439d5cd7819258332d/Model/model.json'
+    )
 
-    # Ensure all inputs are numeric
-    input_df = input_df.apply(pd.to_numeric)
+    if model is not None and optimal_lambdas is not None:
+        # Input fields
+        input_data = {}
+        col1, col2 = st.columns(2)
+        for i, feature in enumerate(expected_features):
+            if i < 4:
+                input_data[feature] = col1.number_input(feature, value=0.0)
+            else:
+                input_data[feature] = col2.number_input(feature, value=0.0)
 
-    # Transform the inputs
-    for feature, optimal_lambda in optimal_lambdas.items():
-        if feature in input_df:
-            input_df[feature] = boxcox1p(input_df[feature], optimal_lambda)
+        # Create DataFrame with input data
+        input_df = pd.DataFrame([input_data])
 
-    # Reorder the columns to match the expected feature order
-    input_df = input_df[expected_features]
+        # Ensure all inputs are numeric
+        input_df = input_df.apply(pd.to_numeric)
 
-    # Make predictions
-    if st.button('Predict'):
-        prediction = model.predict(input_df)
-        inverse_prediction = np.expm1(prediction)
-        st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
-else:
-    st.error("Failed to load model or transformation parameters. Please check the URLs.")
+        # Transform the inputs
+        for feature, optimal_lambda in optimal_lambdas.items():
+            if feature in input_df:
+                input_df[feature] = boxcox1p(input_df[feature], optimal_lambda)
+
+        # Reorder the columns to match the expected feature order
+        input_df = input_df[expected_features]
+
+        # Make predictions
+        if st.button('Predict'):
+            prediction = model.predict(input_df)
+            inverse_prediction = np.expm1(prediction)
+            st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
