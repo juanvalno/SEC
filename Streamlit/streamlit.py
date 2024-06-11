@@ -4,6 +4,7 @@ import numpy as np
 import joblib
 import pickle
 from scipy.special import boxcox1p
+from catboost import CatBoostRegressor
 import requests
 import io
 
@@ -22,7 +23,8 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
 
     # Load the model and transformation parameters
     optimal_lambdas = pickle.load(lambda_buffer)
-    model = joblib.load(model_buffer)
+    model = CatBoostRegressor()
+    model.load_model(model_buffer)
 
     # Debugging: Check the type and a few key attributes of the loaded model
     st.write(f"Model type: {type(model)}")
