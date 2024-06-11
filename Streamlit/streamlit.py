@@ -21,16 +21,8 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
     model_buffer = io.BytesIO(response_model.content)
 
     # Load the model and transformation parameters
-    try:
-        model = joblib.load(lambda_buffer)
-        optimal_lambdas = pickle.load(model_buffer)
-    except Exception as e:
-        st.error(f"Error loading model or transformation parameters: {e}")
-        st.stop()
-
-    # Debug: Print model attributes
-    st.write("Model loaded successfully")
-    st.write("Model attributes:", dir(model))
+    model = joblib.load(lambda_buffer)
+    optimal_lambdas = pickle.load(model_buffer)
 
     # Define all expected features
     expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
@@ -63,11 +55,8 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
 
     # Make predictions
     if st.button('Predict'):
-        try:
-            prediction = model.predict(input_df)
-            inverse_prediction = np.expm1(prediction)
-            st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
-        except Exception as e:
-            st.error(f"Error making prediction: {e}")
+        prediction = model.predict(input_df)
+        inverse_prediction = np.expm1(prediction)
+        st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
 else:
     st.error("Failed to load model or transformation parameters. Please check the URLs.")
