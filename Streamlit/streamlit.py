@@ -5,6 +5,7 @@ from xgboost import XGBRegressor
 from scipy.special import boxcox1p
 import requests
 import io
+import pickle
 
 # Load pickle files from URLs
 url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl'
