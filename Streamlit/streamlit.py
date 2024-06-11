@@ -6,11 +6,10 @@ import pickle
 from scipy.special import boxcox1p
 import requests
 import io
-import xgboost as xgb
 
 # Load pickle files from URLs
-url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/model.pkl'
-url_model = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl'
+url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl'
+url_model = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/model.pkl'
 
 response_lambda = requests.get(url_lambda)
 response_model = requests.get(url_model)
@@ -22,16 +21,8 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
     model_buffer = io.BytesIO(response_model.content)
 
     # Load the model and transformation parameters
-    try:
-        model = joblib.load(lambda_buffer)
-        optimal_lambdas = pickle.load(model_buffer)
-    except Exception as e:
-        st.error(f"Error loading model or transformation parameters: {e}")
-        st.stop()
-
-    # Debug: Print model attributes
-    st.write("Model loaded successfully")
-    st.write("Model attributes:", dir(model))
+    optimal_lambdas = pickle.load(lambda_buffer)
+    model = joblib.load(model_buffer)
 
     # Define all expected features
     expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
@@ -64,15 +55,8 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
 
     # Make predictions
     if st.button('Predict'):
-        try:
-            # Ensure the model is configured correctly for CPU usage
-            if hasattr(model, 'set_params'):
-                model.set_params(**{"gpu_id": -1})
-            
-            prediction = model.predict(input_df)
-            inverse_prediction = np.expm1(prediction)
-            st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
-        except Exception as e:
-            st.error(f"Error making prediction: {e}")
+        prediction = model.predict(input_df)
+        inverse_prediction = np.expm1(prediction)
+        st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
 else:
     st.error("Failed to load model or transformation parameters. Please check the URLs.")
