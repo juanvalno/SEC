@@ -6,6 +6,7 @@ import pickle
 from scipy.special import boxcox1p
 import requests
 import io
+import xgboost as xgb
 
 # Load pickle files from URLs
 url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/model.pkl'
@@ -64,10 +65,10 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
     # Make predictions
     if st.button('Predict'):
         try:
-            # Check if 'gpu_id' attribute is present, set to None if not
-            if not hasattr(model, 'gpu_id'):
-                model.set_params(gpu_id=None)
-
+            # Ensure the model is configured correctly for CPU usage
+            if hasattr(model, 'set_params'):
+                model.set_params(**{"gpu_id": -1})
+            
             prediction = model.predict(input_df)
             inverse_prediction = np.expm1(prediction)
             st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
