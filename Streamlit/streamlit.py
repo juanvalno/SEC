@@ -23,9 +23,14 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
     # Load the transformation parameters
     optimal_lambdas = pickle.load(lambda_buffer)
 
-    # Load the model from the JSON content
+    # Save the model buffer to a file
+    model_file_path = '../Model/model.json'
+    with open(model_file_path, 'wb') as file:
+        file.write(model_buffer.getvalue())
+
+    # Load the model from the saved file
     model = XGBRegressor()
-    model.load_model(model_buffer)  # Load model from JSON buffer
+    model.load_model(model_file_path)  # Load model from the saved file
 
     # Define all expected features
     expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
