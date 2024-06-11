@@ -32,19 +32,12 @@ def load_model_and_params(url_lambda, url_model):
 # Define all expected features
 expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
 
-# Sidebar navigation
-st.sidebar.title('Navigation')
-page = st.sidebar.radio('Go to', ['Home', 'Predict'])
+# Home page
+st.title('Welcome to FARM: Food Availability and Security Monitor')
+st.write('This application helps monitor food availability and security based on various indicators.')
 
-# Page: Home
-if page == 'Home':
-    st.title('Welcome to FARM: Food Availability and Security Monitor')
-    st.write('Navigate to the Predict page to make predictions.')
-
-# Page: Predict
-elif page == 'Predict':
-    st.title('Prediction Page')
-
+# Button to go to prediction page
+if st.button('Go to Prediction Page'):
     # Load the model and parameters
     model, optimal_lambdas = load_model_and_params(
         'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl',
@@ -52,6 +45,8 @@ elif page == 'Predict':
     )
 
     if model is not None and optimal_lambdas is not None:
+        st.title('Prediction Page')
+
         # Input fields
         input_data = {}
         col1, col2 = st.columns(2)
