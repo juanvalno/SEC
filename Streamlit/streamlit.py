@@ -56,19 +56,4 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
             input_df[feature] = boxcox1p(input_df[feature], optimal_lambda)
 
     # Reorder the columns to match the expected feature order
-    input_df = input_df[expected_features]
-
-    # Debugging: Check the transformed input data
-    st.write("Transformed input data:")
-    st.write(input_df)
-
-    # Make predictions
-    if st.button('Predict'):
-        try:
-            prediction = model.predict(input_df)
-            inverse_prediction = np.expm1(prediction)
-            st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
-        except Exception as e:
-            st.error(f"Prediction error: {e}")
-else:
-    st.error("Failed to load model or transformation parameters. Please check the URLs.")
+    input_df = input_df
