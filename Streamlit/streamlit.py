@@ -7,6 +7,10 @@ import requests
 import io
 import pickle
 
+# Initialize session state
+if 'page' not in st.session_state:
+    st.session_state.page = 'home'
+
 # Function to load the model and transformation parameters
 def load_model_and_params(url_lambda, url_model):
     response_lambda = requests.get(url_lambda)
@@ -33,11 +37,14 @@ def load_model_and_params(url_lambda, url_model):
 expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
 
 # Home page
-st.title('Welcome to FARM: Food Availability and Security Monitor')
-st.write('This application helps monitor food availability and security based on various indicators.')
+if st.session_state.page == 'home':
+    st.title('Welcome to FARM: Food Availability and Security Monitor')
+    st.write('This application helps monitor food availability and security based on various indicators.')
+    if st.button('Go to Prediction Page'):
+        st.session_state.page = 'predict'
 
-# Button to go to prediction page
-if st.button('Go to Prediction Page'):
+# Prediction page
+elif st.session_state.page == 'predict':
     # Load the model and parameters
     model, optimal_lambdas = load_model_and_params(
         'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl',
@@ -70,8 +77,12 @@ if st.button('Go to Prediction Page'):
         # Reorder the columns to match the expected feature order
         input_df = input_df[expected_features]
 
-        # Make predictions
-        if st.button('Predict'):
+        # Button to make predictions
+        if st.button('Predict ML'):
             prediction = model.predict(input_df)
             inverse_prediction = np.expm1(prediction)
             st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
+
+        # Button to go back to the home page
+        if st.button('Back to Home Page'):
+            st.session_state.page = 'home'
