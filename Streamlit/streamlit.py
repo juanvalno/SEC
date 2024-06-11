@@ -8,8 +8,8 @@ import requests
 import io
 
 # Load pickle files from URLs
-url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl'
-url_model = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/model.pkl'
+url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/6896470d092da9971c8cf331a11dbfbb2b5072ff/Model/model.pkl'
+url_model = 'https://raw.githubusercontent.com/juanvalno/SEC/6896470d092da9971c8cf331a11dbfbb2b5072ff/Model/model.pkl'
 
 response_lambda = requests.get(url_lambda)
 response_model = requests.get(url_model)
