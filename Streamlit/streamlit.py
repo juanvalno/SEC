@@ -8,8 +8,8 @@ import requests
 import io
 
 # Load pickle files from URLs
-url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/model.pkl'
-url_model = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl'
+url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl'
+url_model = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/model.pkl'
 
 response_lambda = requests.get(url_lambda)
 response_model = requests.get(url_model)
@@ -21,8 +21,12 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
     model_buffer = io.BytesIO(response_model.content)
 
     # Load the model and transformation parameters
-    model = joblib.load(lambda_buffer)
-    optimal_lambdas = pickle.load(model_buffer)
+    optimal_lambdas = pickle.load(lambda_buffer)
+    model = joblib.load(model_buffer)
+
+    # Debugging: Check the type and a few key attributes of the loaded model
+    st.write(f"Model type: {type(model)}")
+    st.write(f"Model parameters: {model.get_params()}")
 
     # Define all expected features
     expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
@@ -53,10 +57,17 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
     # Reorder the columns to match the expected feature order
     input_df = input_df[expected_features]
 
+    # Debugging: Check the transformed input data
+    st.write("Transformed input data:")
+    st.write(input_df)
+
     # Make predictions
     if st.button('Predict'):
-        prediction = model.predict(input_df)
-        inverse_prediction = np.expm1(prediction)
-        st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
+        try:
+            prediction = model.predict(input_df)
+            inverse_prediction = np.expm1(prediction)
+            st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
+        except Exception as e:
+            st.error(f"Prediction error: {e}")
 else:
     st.error("Failed to load model or transformation parameters. Please check the URLs.")
