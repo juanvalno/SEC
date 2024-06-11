@@ -24,7 +24,7 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
     optimal_lambdas = pickle.load(lambda_buffer)
 
     # Save the model buffer to a file
-    model_file_path = '../Model/model.json'
+    model_file_path = 'Model/model.json'
     with open(model_file_path, 'wb') as file:
         file.write(model_buffer.getvalue())
 
