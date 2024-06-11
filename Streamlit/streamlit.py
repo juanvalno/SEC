@@ -1,15 +1,14 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import joblib
-import pickle
+from xgboost import XGBRegressor
 from scipy.special import boxcox1p
 import requests
 import io
 
 # Load pickle files from URLs
 url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl'
-url_model = 'https://raw.githubusercontent.com/juanvalno/SEC/660b76788a5b105438655a3eeeafd9696f0f123a/Model/model.pkl'
+url_model = 'https://raw.githubusercontent.com/juanvalno/SEC/22d581a130216da15bff6c439d5cd7819258332d/Model/model.json'
 
 response_lambda = requests.get(url_lambda)
 response_model = requests.get(url_model)
@@ -20,9 +19,12 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
     lambda_buffer = io.BytesIO(response_lambda.content)
     model_buffer = io.BytesIO(response_model.content)
 
-    # Load the model and transformation parameters
-    model = joblib.load(model_buffer)
+    # Load the transformation parameters
     optimal_lambdas = pickle.load(lambda_buffer)
+
+    # Load the model from the JSON content
+    model = XGBRegressor()
+    model.load_model(model_buffer)  # Load model from JSON buffer
 
     # Define all expected features
     expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
