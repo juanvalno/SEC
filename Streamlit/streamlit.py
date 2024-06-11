@@ -4,13 +4,12 @@ import numpy as np
 import joblib
 import pickle
 from scipy.special import boxcox1p
-from catboost import CatBoostRegressor
 import requests
 import io
 
 # Load pickle files from URLs
-url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/e63f5341a8298d5e5b3a9da976689526f21c5bf1/Model/transformation_params.pkl'
-url_model = 'https://raw.githubusercontent.com/juanvalno/SEC/ea5fd054042e0151847e48a722536e715d5b2538/Model/model_cat.pkl'
+url_lambda = 'https://raw.githubusercontent.com/juanvalno/SEC/6d0553bca78ed9b7479eb6f103ebcb1c2dca79b0/Model/transformation_params.pkl'
+url_model = 'https://raw.githubusercontent.com/juanvalno/SEC/660b76788a5b105438655a3eeeafd9696f0f123a/Model/model.pkl'
 
 response_lambda = requests.get(url_lambda)
 response_model = requests.get(url_model)
@@ -22,12 +21,8 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
     model_buffer = io.BytesIO(response_model.content)
 
     # Load the model and transformation parameters
+    model = joblib.load(model_buffer)
     optimal_lambdas = pickle.load(lambda_buffer)
-    model = CatBoostRegressor()
-    model.load_model(model_buffer)
-
-    # Debugging: Check the type and a few key attributes of the loaded model
-    st.write(f"Model type: {type(model)}")
 
     # Define all expected features
     expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
@@ -56,4 +51,12 @@ if response_lambda.status_code == 200 and response_model.status_code == 200:
             input_df[feature] = boxcox1p(input_df[feature], optimal_lambda)
 
     # Reorder the columns to match the expected feature order
-    input_df = input_df
+    input_df = input_df[expected_features]
+
+    # Make predictions
+    if st.button('Predict'):
+        prediction = model.predict(input_df)
+        inverse_prediction = np.expm1(prediction)
+        st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
+else:
+    st.error("Failed to load model or transformation parameters. Please check the URLs.")
