@@ -38,8 +38,52 @@ expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL',
 
 # Home page
 if st.session_state.page == 'home':
-    st.title('Welcome to FARM: Food Availability and Security Monitor')
-    st.write('This application helps monitor food availability and security based on various indicators.')
+    st.title('Selamat Datang di PEKA: Pemantauan Ketahanan Pangan')
+    # Custom CSS for text justification
+    st.markdown(
+        """
+        <style>
+        .justified-text {
+            text-align: justify;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Using HTML within st.markdown to justify text
+    st.markdown(
+        """
+        <div class="justified-text">
+        Ketahanan pangan adalah aspek fundamental untuk mencapai kesejahteraan masyarakat yang berkelanjutan di Indonesia, 
+        yang menghadapi tantangan signifikan karena berbagai faktor sosial-ekonomi seperti kemiskinan, akses pangan, 
+        ketersediaan listrik dan air bersih, pendidikan, dan kesehatan. Penggunaan teknologi kecerdasan buatan (AI) dan 
+        machine learning dapat memantau dan memprediksi faktor-faktor ketahanan pangan dengan model prediktif yang menganalisis 
+        indikator-indikator seperti rasio konsumsi, kemiskinan, pengeluaran rumah tangga, akses listrik dan air bersih, harapan hidup, 
+        tenaga kesehatan, pendidikan, dan prevalensi stunting. Salah satu inovasi yang dapat dikembangkan adalah sistem pemantauan 
+        ketahanan pangan berbasis AI bernama PEKA, yang mengintegrasikan data dari berbagai sumber untuk memberikan informasi akurat 
+        dan terkini tentang status ketahanan pangan di setiap wilayah.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.image("https://raw.githubusercontent.com/juanvalno/SEC/58ffc809a12294a4f73fbe334dfaa73de18f911b/Asset/Top%2010%20IKP.png")
+    st.markdown(
+        """
+        <div class="justified-text">
+        Grafik tersebut menampilkan 10 wilayah dengan Indeks Ketahanan Pangan (IKP) tertinggi di Indonesia. Pada grafik ini, 
+        setiap batang horizontal mewakili satu wilayah dengan persentase IKP yang ditampilkan di ujung kanan batang. Judul 
+        grafiknya adalah "Top 10 Wilayah dengan Indeks Ketahanan Pangan Tertinggi."
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+       
+    st.image("https://raw.githubusercontent.com/juanvalno/SEC/58ffc809a12294a4f73fbe334dfaa73de18f911b/Asset/Bot%2010%20IKP.png")
+    st.image("https://raw.githubusercontent.com/juanvalno/SEC/58ffc809a12294a4f73fbe334dfaa73de18f911b/Asset/Perbandingan%20Persentase%20Kemiskinan%20(POV)%20dan%20IKP.png")
+    st.image("https://raw.githubusercontent.com/juanvalno/SEC/58ffc809a12294a4f73fbe334dfaa73de18f911b/Asset/Distribusi%20Ketahanan%20Pangan%20Berdasarkan%20Cluster.png")
+    
     if st.button('Go to Prediction Page'):
         st.session_state.page = 'predict'
 
