@@ -12,6 +12,8 @@ if 'page' not in st.session_state:
     st.session_state.page = 'home'
 
 # Function to load the model and transformation parameters
+
+
 def load_model_and_params(url_lambda, url_model):
     response_lambda = requests.get(url_lambda)
     response_model = requests.get(url_model)
@@ -30,16 +32,19 @@ def load_model_and_params(url_lambda, url_model):
         model.load_model(model_file_path)
         return model, optimal_lambdas
     else:
-        st.error("Failed to load model or transformation parameters. Please check the URLs.")
+        st.error(
+            "Failed to load model or transformation parameters. Please check the URLs.")
         return None, None
 
+
 # Define all expected features
-expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
+expected_features = ['POV', 'FOOD', 'ELEC',
+                     'WATER', 'LIFE', 'HEALTH', 'SCHOOL', 'STUNTING']
 
 # Home page
 if st.session_state.page == 'home':
     st.title('Selamat Datang di PEKA: Pemantauan Ketahanan Pangan')
-    
+
     # Custom CSS for text justification
     st.markdown(
         """
@@ -148,7 +153,7 @@ if st.session_state.page == 'home':
         """,
         unsafe_allow_html=True
     )
-        
+
     if st.button('Go to Prediction Page'):
         st.session_state.page = 'predict'
 
