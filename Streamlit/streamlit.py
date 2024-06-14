@@ -154,7 +154,7 @@ if st.session_state.page == 'home':
         unsafe_allow_html=True
     )
 
-    if st.button('Go to Prediction Page'):
+    if st.button('Menuju ke Halaman Prediksi'):
         st.session_state.page = 'predict'
 
 # Prediction page
@@ -166,7 +166,7 @@ elif st.session_state.page == 'predict':
     )
 
     if model is not None and optimal_lambdas is not None:
-        st.title('Prediction Page')
+        st.title('Prediksi Indeks Ketahanan Pangan')
 
         # Input fields
         input_data = {}
@@ -192,11 +192,11 @@ elif st.session_state.page == 'predict':
         input_df = input_df[expected_features]
 
         # Button to make predictions
-        if st.button('Predict'):
+        if st.button('Prediksi'):
             prediction = model.predict(input_df)
             inverse_prediction = np.expm1(prediction)
-            st.write('Predicted IKP: {:.2f}'.format(inverse_prediction[0]))
+            st.write('Prediksi IKP: {:.2f}'.format(inverse_prediction[0]))
 
         # Button to go back to the home page
-        if st.button('Back to Home Page'):
+        if st.button('Kembali Halaman Utama'):
             st.session_state.page = 'home'
