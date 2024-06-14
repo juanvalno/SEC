@@ -39,6 +39,7 @@ expected_features = ['POV', 'FOOD', 'ELEC', 'WATER', 'LIFE', 'HEALTH', 'SCHOOL',
 # Home page
 if st.session_state.page == 'home':
     st.title('Selamat Datang di PEKA: Pemantauan Ketahanan Pangan')
+    
     # Custom CSS for text justification
     st.markdown(
         """
@@ -46,12 +47,16 @@ if st.session_state.page == 'home':
         .justified-text {
             text-align: justify;
         }
+        .highlight {
+            font-weight: bold;
+            color: #0056b3;  /* Optional: Change color to make it more visually appealing */
+        }
         </style>
         """,
         unsafe_allow_html=True
     )
 
-    # Using HTML within st.markdown to justify text
+    # Using HTML within st.markdown to justify text and apply custom CSS classes
     st.markdown(
         """
         <div class="justified-text">
@@ -72,18 +77,78 @@ if st.session_state.page == 'home':
     st.markdown(
         """
         <div class="justified-text">
-        Grafik tersebut menampilkan 10 wilayah dengan Indeks Ketahanan Pangan (IKP) tertinggi di Indonesia. Pada grafik ini, 
-        setiap batang horizontal mewakili satu wilayah dengan persentase IKP yang ditampilkan di ujung kanan batang. Judul 
-        grafiknya adalah "Top 10 Wilayah dengan Indeks Ketahanan Pangan Tertinggi."
+        <span class="highlight">1. Top 10 Wilayah dengan Indeks Ketahanan Pangan Terendah</span><br>
+        Pada grafik pertama, kita melihat daftar sepuluh wilayah dengan indeks ketahanan pangan (IKP) terendah. Wilayah Pegunungan 
+        Bintang memiliki IKP terendah di antara wilayah-wilayah lain, yaitu 14,54, diikuti oleh Mamberamo Raya dengan 17,63. Sementara 
+        itu, wilayah dengan IKP terendah lainnya adalah Dogiyai, Intan Jaya, dan Nduga.
         </div>
         """,
         unsafe_allow_html=True
     )
-       
+    st.markdown(
+        """
+        <div class="justified-text">
+        Grafik ini mengindikasikan bahwa wilayah-wilayah dengan IKP rendah ini kemungkinan besar menghadapi tantangan signifikan dalam 
+        hal ketersediaan dan aksesibilitas pangan. Ketahanan pangan yang rendah dapat disebabkan oleh berbagai faktor, termasuk 
+        tingginya tingkat kemiskinan, infrastruktur yang buruk, serta akses yang terbatas terhadap pendidikan dan layanan kesehatan.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     st.image("https://raw.githubusercontent.com/juanvalno/SEC/58ffc809a12294a4f73fbe334dfaa73de18f911b/Asset/Bot%2010%20IKP.png")
+    st.markdown(
+        """
+        <div class="justified-text">
+        <span class="highlight">2. Perbandingan Persentase Kemiskinan (POV) dan Indeks Ketahanan Pangan (IKP) di 10 Wilayah dengan Kemiskinan Tertinggi</span><br>
+        Grafik kedua menunjukkan hubungan antara persentase kemiskinan (POV) dan IKP di sepuluh wilayah dengan tingkat kemiskinan tertinggi. 
+        Ada korelasi yang jelas antara kemiskinan dan ketahanan pangan; wilayah dengan tingkat kemiskinan tinggi cenderung memiliki IKP yang 
+        rendah. Contohnya, wilayah Puncak Jaya memiliki persentase kemiskinan tertinggi, dan juga IKP yang sangat rendah.<br>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown(
+        """
+        <div class="justified-text">
+        Fakta ini menegaskan bahwa peningkatan kondisi ekonomi adalah kunci untuk memperbaiki ketahanan pangan. Program pengentasan kemiskinan 
+        yang efektif harus menjadi prioritas untuk meningkatkan aksesibilitas dan ketersediaan pangan di wilayah-wilayah ini.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     st.image("https://raw.githubusercontent.com/juanvalno/SEC/58ffc809a12294a4f73fbe334dfaa73de18f911b/Asset/Perbandingan%20Persentase%20Kemiskinan%20(POV)%20dan%20IKP.png")
+    st.markdown(
+        """
+        <div class="justified-text">
+        <span class="highlight">3. Distribusi Ketahanan Pangan Berdasarkan Cluster</span><br>
+        Grafik ketiga menunjukkan distribusi IKP berdasarkan tiga cluster kondisi sosio-ekonomi:<br>
+        <strong>Cluster 0:</strong> Klaster ini mencakup daerah-daerah dengan tingkat kemiskinan relatif rendah. Rata-rata IKP di klaster ini adalah 79,65, yang menunjukkan bahwa daerah-daerah ini memiliki ketahanan pangan yang relatif baik. Tingginya rata-rata lama sekolah perempuan dan ketersediaan layanan kesehatan yang cukup baik berkontribusi pada kondisi ini.<br><br>
+        <strong>Cluster 1:</strong> Klaster ini terdiri dari daerah-daerah dengan tingkat kemiskinan sedang. Rata-rata IKP di klaster ini adalah 74,26. Meskipun sebagian besar rumah tangga memiliki akses listrik, masih ada banyak yang tidak memiliki akses air bersih, dan layanan kesehatan kurang memadai, menunjukkan perlunya peningkatan akses pendidikan dan kesehatan.<br><br>
+        <strong>Cluster 2:</strong> Klaster ini mencakup daerah-daerah dengan tingkat kemiskinan sangat tinggi. Rata-rata IKP di klaster ini adalah yang terendah, yaitu 40,48. Klaster ini menghadapi tantangan terbesar, dengan akses pendidikan dan layanan kesehatan yang sangat terbatas, serta sebagian besar rumah tangga tidak memiliki akses listrik dan air bersih.    
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     st.image("https://raw.githubusercontent.com/juanvalno/SEC/58ffc809a12294a4f73fbe334dfaa73de18f911b/Asset/Distribusi%20Ketahanan%20Pangan%20Berdasarkan%20Cluster.png")
-    
+    st.markdown(
+        """
+        <div class="justified-text">
+        <span class="highlight">Analisis dan Implementasi Melalui Smart Monitoring System PEKA</span><br>
+        Berdasarkan analisis data di atas, dapat disimpulkan bahwa ketahanan pangan di Indonesia sangat bervariasi tergantung pada kondisi 
+        sosio-ekonomi masing-masing wilayah. Untuk mewujudkan ketahanan pangan yang lebih baik, perlu adanya pendekatan yang berbasis data 
+        dan kecerdasan buatan melalui Smart Monitoring System PEKA (Pemantauan Ketahanan Pangan).<br><br>
+        
+        Sistem PEKA yang berbasis kecerdasan buatan (AI) dapat memainkan peran penting dalam memantau dan memprediksi ketahanan pangan, 
+        serta memberikan informasi yang akurat dan terkini untuk pengambilan keputusan yang lebih baik. Implementasi sistem ini diharapkan 
+        dapat membantu meningkatkan ketahanan pangan secara menyeluruh, terutama di wilayah-wilayah yang saat ini masih menghadapi tantangan
+        besar.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+        
     if st.button('Go to Prediction Page'):
         st.session_state.page = 'predict'
 
